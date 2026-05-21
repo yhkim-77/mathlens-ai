@@ -103,7 +103,10 @@ uvicorn app.main:app --reload
 
 ## 📄 문서
 
-- [RFP 문서](docs/RFP.md)
+- [RFP 문서 v1.0](docs/RFP.md)
+- [RFP 문서 v1.1](docs/RFP_v1.1.md)
+- [RFP 문서 v2.0](docs/RFP_v2.0.md) — 펜 수식 인식 기술 현실 구현 방안 중심 최신판
+- [PRD (제품 요구사항 문서)](docs/PRD.md)
 - [시스템 아키텍처](docs/ARCHITECTURE.md)
 
 ---
