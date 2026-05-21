@@ -1,13 +1,23 @@
 # MathLens AI — 통합 제품 요구사항 문서 (PRD)
 
-**문서 버전:** v2.0 (통합본)  
+**문서 버전:** v3.0 (통합본)  
 **작성일:** 2026년 5월 21일  
 **문서 유형:** Product Requirements Document (PRD)  
 **작성자:** MathLens AI 제품팀  
 **상태:** 초안 (Draft)  
-**변경 이력:**
-- v1.0 (2026-05-21) — 최초 작성 (PRD.md + 서브시스템 PRD 분리 운영)
-- v2.0 (2026-05-21) — **통합본**: 백엔드 문제 출제, 펜 입력, AI 인식 파이프라인 서브시스템 PRD를 메인 PRD에 통합. 오류 처리, 테스트, 배포 요구사항 추가.
+
+---
+
+## 문서 변경 이력
+
+| 버전 | 날짜 | 파일명 (구) | 주요 변경 내용 |
+|------|------|-------------|----------------|
+| v1.0 | 2026-05-21 | `PRD.md` | 최초 작성 — 제품 비전, 사용자 페르소나, 사용자 스토리, 기능 요구사항, 기술 아키텍처 결정사항, 화면 흐름, API 명세, 데이터 모델, 출시 기준, 성공 지표(KPI) 포함 |
+| v1.5 | 2026-05-21 | `PRD_ProblemServing_PenRecognition.md` | 서브시스템 PRD 분리 — 백엔드 문제 출제 시스템(문제은행, LLM 생성, 추천 엔진), 펜 입력 캡처·전송, AI 인식 파이프라인에 대한 상세 기능 요구사항 별도 기술 |
+| v2.0 | 2026-05-21 | `PRD_통합본.md` | **통합본**: 문제 출제·펜 입력·AI 인식 파이프라인 서브시스템 PRD를 메인 PRD에 통합. 오류 처리(11장), 테스트(12장), 배포(13장) 챕터 추가 |
+| v3.0 | 2026-05-21 | `PRD_통합본.md` | 마일스톤 섹션(17장) 추가 (날짜·완료 기준·스프린트 계획 포함), React/React Native 기술 호환성 검토 섹션(18장) 추가. 이전 버전 파일 삭제 후 통합본으로 일원화 |
+
+> **참고**: v1.0~v1.5 문서 파일은 이 통합본으로 대체되어 삭제되었습니다. 원본 내용은 위 변경 이력 및 Git 커밋 히스토리에서 확인할 수 있습니다.
 
 ---
 
@@ -37,6 +47,8 @@
 14. [리스크 및 완화 방안](#14-리스크-및-완화-방안)
 15. [성공 지표 (KPI)](#15-성공-지표-kpi)
 16. [변경 이력](#16-변경-이력)
+17. [마일스톤](#17-마일스톤)
+18. [React / React Native 기술 호환성 검토](#18-react--react-native-기술-호환성-검토)
 
 ---
 
@@ -1209,7 +1221,146 @@ HTR 인식 실패 또는 신뢰도 낮음
 | 버전 | 날짜 | 변경 내용 | 작성자 |
 |------|------|-----------|--------|
 | v1.0 | 2026-05-21 | 최초 작성 — RFP v2.0 기반 PRD 전면 작성 | MathLens AI 제품팀 |
-| v2.0 | 2026-05-21 | 통합본 — 문제 출제·펜 입력·AI 인식 파이프라인 서브시스템 통합. 오류 처리(11), 테스트(12), 배포(13) 챕터 추가. | MathLens AI 제품팀 |
+| v2.0 | 2026-05-21 | 통합본 — 문제 출제·펜 입력·AI 인식 파이프라인 서브시스템 통합. 오류 처리(11), 테스트(12), 배포(13) 챕터 추가 | MathLens AI 제품팀 |
+| v3.0 | 2026-05-21 | 마일스톤 섹션(17장) 추가, React/React Native 기술 호환성 검토 섹션(18장) 추가. 이전 버전 파일(PRD.md, PRD_ProblemServing_PenRecognition.md) 삭제 후 통합본 일원화 | MathLens AI 제품팀 |
+
+---
+
+## 17. 마일스톤
+
+> 계약 체결일을 D+0(기산일)로 산정합니다. 각 마일스톤은 이전 마일스톤 완료를 전제로 하며, 미충족 시 이해관계자 협의 후 일정 조정.
+
+### 17.1 마일스톤 목록
+
+| 마일스톤 | 기간 (기산일 기준) | 예상 날짜 (계약 2026-07 가정) | 완료 기준 | 담당 |
+|----------|------|------|-----------|------|
+| **M0 — 프로젝트 킥오프** | D+0 | 2026년 7월 초 | 계약 체결, 팀 구성 완료, 개발 환경(GitHub, Docker, CI/CD) 셋업 완료 | PM |
+| **M1 — 설계 완료 (Design Freeze)** | D+60 | 2026년 8월 말 | DB 스키마 확정, API 명세 초안 승인, iink SDK PoC 성공 (수식 5종 인식 확인), 시스템 설계서 이해관계자 승인 | 기술 리드 |
+| **M2 — 문제 출제 API 완료** | D+90 | 2026년 9월 말 | `GET /problems/recommend` P95 ≤ 300ms, LLM 문제 생성 API 정상 응답 확인, 중학 1학년 전 단원 문제은행 단원별 최소 50문항 등록 | 백엔드 팀 |
+| **M3 — 펜 입력 캔버스 + 이미지 전송 완료** | D+120 | 2026년 10월 말 | iOS(PencilKit)/Android(Canvas) 펜 입력 → 서버 이미지 수신 확인, 60 FPS 이상 캔버스 렌더링, 스트로크 → 이미지 변환 및 S3 업로드 정상 동작 | 클라이언트 팀 |
+| **M4 — HTR 파이프라인 완료** | D+150 | 2026년 11월 말 | iink SDK 실시간 인식 + MathPix Fallback 파이프라인 동작, 샘플 100문항 수식 인식 정확도 ≥ 95%, LaTeX 출력 파싱 성공률 ≥ 98% | AI/HTR 팀 |
+| **M5 — AI 분석 엔진 통합 완료** | D+180 | 2026년 12월 말 | GPT-4o 오답 5대 유형 분류 정확도 ≥ 90% (100문항 테스트셋), WebSocket 단계별 상태 전달 동작, 전체 파이프라인 P95 ≤ 10초, SymPy 동치 판별 정확도 ≥ 99% | AI 팀 |
+| **M6 — Phase 1 기능 완성** | D+195 | 2027년 1월 초 | 출시 기준(Section 10) 기능 완성도 체크리스트 100% 충족, 소셜 로그인 3종 정상 동작, 학습 리포트 화면 구현 완료 | 전체 팀 |
+| **M7 — 알파 테스트 완료** | D+210 | 2027년 1월 말 | 내부 테스터 20명 이상 참여, 크리티컬/블로킹 버그 0건, 크래시율 < 0.1%, HTR 정확도 재측정 기준 충족 | QA 팀 |
+| **M8 — 베타 테스트 완료** | D+270 | 2027년 3월 말 | 실사용자 100명 이상 베타 참여, D7 Retention ≥ 40%, NPS ≥ 30, 인식 오류 패턴 개선 반영 완료, 성능 P95 기준 충족 | 전체 팀 |
+| **M9 — Phase 1 출시 (MVP)** | D+300 | 2027년 4월 말 | 앱스토어/플레이스토어 심사 통과, OWASP Mobile Top 10 보안 점검 완료, 아동 개인정보 처리 법무 검토 완료, 출시 기준(Section 10) 품질 기준 전체 충족 | PM + 전체 팀 |
+| **M10 — Phase 2 완료** | D+450 | 2027년 9월 | 학부모/교사 대시보드, 고등 수학 전 범위, 개념 맵 시각화, 푸시 알림 기능 출시 | 전체 팀 |
+| **M11 — Phase 3 완료** | D+630 | 2028년 1월 | 온디바이스 AI 추론(CoreML/TFLite), 실시간 협업 풀이, 교사 맞춤 출제 도구 출시 | 전체 팀 |
+
+### 17.2 스프린트 계획 (Phase 1 상세, 2주 단위)
+
+| Sprint | 기간 (기산일 기준) | 주요 목표 | 완료 기준 |
+|--------|------|-----------|-----------|
+| Sprint 0 | D+0~D+14 | 환경 구성, 기술 검증 (iink PoC, DB 설계) | Docker Compose 로컬 환경 구동, iink SDK 수식 3종 인식 확인 |
+| Sprint 1 | D+14~D+28 | 백엔드 기반 구축 (FastAPI, PostgreSQL, Redis, JWT 인증) | `/health`, `/auth/login` API 정상 응답 |
+| Sprint 2 | D+28~D+42 | 문제은행 DB 구축, 문제 추천 API (`GET /problems/recommend`) | 중학 1학년 1단원 50문항 등록, 추천 API P95 ≤ 300ms |
+| Sprint 3 | D+42~D+56 | LLM 문제 생성 API, 소셜 로그인 (Apple, Google, Kakao) | 문제 생성 API LaTeX 검증 통과율 ≥ 95%, 로그인 3종 동작 |
+| Sprint 4 | D+56~D+70 | 모바일 캔버스 UI (iOS PencilKit + Android Canvas), 이미지 업로드 | 60 FPS 캔버스, S3 업로드 성공 |
+| Sprint 5 | D+70~D+84 | iink SDK 통합 (네이티브 모듈 브리지), 실시간 인식 결과 미리보기 | iink SDK 중등 수식 10종 인식 성공 |
+| Sprint 6 | D+84~D+98 | MathPix Fallback 파이프라인, Celery 비동기 큐 | Fallback 시나리오 자동 전환 동작 확인 |
+| Sprint 7 | D+98~D+112 | GPT-4o 오답 분석 통합, WebSocket 상태 전달 | 오답 분류 정확도 ≥ 85% (50문항 샘플 기준) |
+| Sprint 8 | D+112~D+126 | 피드백 UI (오류 하이라이팅, 개념 설명 카드), 유사 문제 재출제 | 피드백 UI 시연 가능 |
+| Sprint 9 | D+126~D+140 | 학습 리포트, 인식 결과 수정 UI, TTS | 리포트 기본 화면 구현 완료 |
+| Sprint 10 | D+140~D+154 | 성능 최적화 (Redis 캐싱, 이미지 압축), 오류 처리 안정화 | 전체 파이프라인 P95 ≤ 10초 |
+| Sprint 11 | D+154~D+168 | 보안 점검 (OWASP), 크래시율 측정, 알파 준비 | 크래시율 < 0.1%, 보안 취약점 0건 (High/Critical) |
+
+### 17.3 Phase별 핵심 기능 범위
+
+| 기능 | Phase 1 (MVP) | Phase 2 | Phase 3 |
+|------|:---:|:---:|:---:|
+| 펜 입력 캔버스 (iink SDK) | ✅ | ✅ | ✅ |
+| MathPix Fallback 인식 | ✅ | ✅ | ✅ |
+| AI 오답 분석 (GPT-4o) | ✅ (5대 유형) | ✅ (전체 유형) | ✅ |
+| 유사 문제 재출제 | ✅ | ✅ | ✅ |
+| 소셜 로그인 3종 | ✅ | ✅ | ✅ |
+| 학습 리포트 (기본) | ✅ | ✅ | ✅ |
+| 학부모/교사 대시보드 | ❌ | ✅ | ✅ |
+| 개념 맵 시각화 | ❌ | ✅ | ✅ |
+| 고등 수학 전 범위 | ❌ | ✅ | ✅ |
+| 오프라인 모드 (iink) | ❌ | ❌ | ✅ |
+| 온디바이스 AI (CoreML/TFLite) | ❌ | ❌ | ✅ |
+| 실시간 협업 풀이 | ❌ | ❌ | ✅ |
+| 교사 맞춤 출제 도구 | ❌ | ❌ | ✅ |
+
+---
+
+## 18. React / React Native 기술 호환성 검토
+
+> **검토 목적**: 본 PRD에 명시된 기능 요구사항 및 기술 결정사항이 React(웹) 및 React Native(모바일 크로스플랫폼) 환경에서 구현 가능한지 검토합니다.  
+> **범례**: ✅ 완전 호환 | ⚠️ 부분 호환 (대안 필요) | ❌ 미호환 (대체 기술 사용 필수)
+
+### 18.1 핵심 기능별 React Native 호환성
+
+| 기능 요구사항 | 현재 기술 결정 | React Native 호환성 | 구현 방안 |
+|------|------|------|-----------|
+| 펜 입력 캔버스 (FR-CANVAS) | PencilKit (iOS) + Android Canvas API | ⚠️ 직접 미지원 | `@shopify/react-native-skia` (React Native 새 아키텍처 기반, 60FPS 달성 가능) + 필요 시 커스텀 네이티브 모듈 |
+| 실시간 수식 인식 (FR-HTR-01) | MyScript iink SDK (네이티브) | ⚠️ 공식 RN 패키지 없음 | **방안 A**: 커스텀 네이티브 모듈로 iOS Swift/Android Kotlin iink SDK 브리징 (권장, 추가 공수 ~3주) **방안 B**: `react-native-webview` + `@myscript/iink-js` 웹 SDK (성능 제한 있음) |
+| 이미지 기반 수식 인식 (MathPix Fallback) | MathPix OCR REST API | ✅ 완전 호환 | React Native에서 `fetch`로 직접 REST API 호출 가능 |
+| 수식 렌더링 (KaTeX) | KaTeX via WebView / iosMath | ✅ 완전 호환 | `react-native-webview` + KaTeX JS, 또는 `react-native-math-view` 라이브러리 사용 |
+| iosMath (iOS 네이티브 렌더링) | iosMath 라이브러리 | ❌ React Native 미지원 | `react-native-math-view` 또는 KaTeX via WebView로 완전 대체 가능 |
+| WebSocket 실시간 통신 | WebSocket (네이티브) | ✅ 완전 호환 | React Native 런타임 내장 `WebSocket` API 그대로 사용 |
+| 카메라 촬영 (문제 스캔) | AVFoundation / CameraX | ✅ 완전 호환 | `react-native-vision-camera` 또는 `expo-camera` |
+| 소셜 로그인 — Apple | ASAuthorizationController | ✅ 완전 호환 | `@invertase/react-native-apple-authentication` |
+| 소셜 로그인 — Google | Google Sign-In SDK | ✅ 완전 호환 | `@react-native-google-signin/google-signin` |
+| 소셜 로그인 — Kakao | Kakao SDK | ⚠️ 비공식 지원 | `react-native-kakao-login` (커뮤니티 유지관리) 또는 OAuth WebView 방식 |
+| 푸시 알림 (Phase 2) | APNs / FCM | ✅ 완전 호환 | `@react-native-firebase/messaging` |
+| 크래시 모니터링 | Firebase Crashlytics | ✅ 완전 호환 | `@react-native-firebase/crashlytics` |
+| 오류 트래킹 | Sentry | ✅ 완전 호환 | `@sentry/react-native` |
+| 온디바이스 AI — CoreML (Phase 3) | CoreML (iOS 전용) | ⚠️ 직접 미지원 | `react-native-fast-tflite` + TFLite 크로스플랫폼 모델 사용 (iOS에서 CoreML 백엔드 활용 가능) |
+| 온디바이스 AI — TFLite (Phase 3) | TFLite (Android) | ✅ 완전 호환 | `react-native-fast-tflite` 공식 지원 |
+| 실행 취소/재실행 (50단계) | 네이티브 Undo 스택 | ✅ 구현 가능 | React 상태 관리로 직접 구현 (Redux/Zustand undo history 패턴) |
+
+### 18.2 백엔드 기술 호환성
+
+백엔드는 REST API / WebSocket으로만 통신하므로 클라이언트 기술과 완전히 독립적입니다.
+
+| 기술 결정 | React Native 호환성 | 비고 |
+|------|------|------|
+| ADR-001: MyScript iink SDK + MathPix (서버 측 처리) | ✅ 완전 호환 | 서버 변경 없음 |
+| ADR-002: OpenAI GPT-4o API | ✅ 완전 호환 | 서버 변경 없음 |
+| ADR-003: KaTeX 수식 렌더링 | ✅ 완전 호환 | 클라이언트에서 WebView 방식 사용 |
+| ADR-004: Python FastAPI 백엔드 | ✅ 완전 호환 | 서버 변경 없음 |
+| ADR-005: Celery + Redis 비동기 처리 | ✅ 완전 호환 | 서버 변경 없음 |
+
+### 18.3 React(웹) 호환성 — 관리자/학부모/교사 포털
+
+| 기능 | React(웹) 호환성 | 구현 방안 |
+|------|------|-----------|
+| 수식 렌더링 (KaTeX) | ✅ 완전 호환 | `react-katex` 또는 KaTeX JS 직접 사용 |
+| 펜 입력 캔버스 (웹) | ✅ 완전 호환 | `@myscript/iink-js` React용 공식 지원 (웹에서 iink 캔버스 완전 구현 가능) |
+| WebSocket 통신 | ✅ 완전 호환 | 브라우저 내장 `WebSocket` API, React에서 직접 사용 |
+| 학습 리포트 차트 | ✅ 완전 호환 | `recharts`, `chart.js`, `victory` 등 React 생태계 풍부 |
+| 소셜 로그인 | ✅ 완전 호환 | `@react-oauth/google`, Kakao JS SDK, Apple Sign In JS |
+| 카메라 촬영 | ✅ 완전 호환 | `react-webcam` 또는 MediaDevices Web API |
+
+### 18.4 주요 이슈 및 PRD 차원의 권고사항
+
+#### 이슈 1: iink SDK React Native 브리징 — M1에서 PoC 필수 ⚠️
+
+FR-HTR-01 (실시간 수식 인식)은 MyScript iink SDK에 의존하며, 공식 React Native 패키지가 없습니다.  
+**PRD 요구사항**: M1(설계 완료, D+60) 단계에서 iink SDK 네이티브 모듈 브리지 PoC를 반드시 검증해야 하며, 검증 실패 시 WebView 방식으로 전환하여 일정을 즉시 조정합니다.
+
+#### 이슈 2: 펜 캔버스 60 FPS — 신 아키텍처 필수 ⚠️
+
+FR-CANVAS 요구사항(16ms/frame 이하)을 React Native에서 달성하려면 React Native 새 아키텍처(Fabric 렌더러 + JSI)와 `@shopify/react-native-skia` v1.0 이상이 필수입니다. 구버전 React Native(Bridge 기반)에서는 달성이 어렵습니다.  
+**PRD 요구사항**: React Native 0.73 이상 + 새 아키텍처 활성화를 프로젝트 설정 단계(D+0~D+14)에서 확정합니다.
+
+#### 이슈 3: 소셜 로그인 Kakao — 안정성 검토 필요 ⚠️
+
+Kakao 소셜 로그인의 React Native 라이브러리는 비공식 커뮤니티 패키지입니다.  
+**PRD 요구사항**: Kakao 로그인 미지원 시 OAuth 2.0 WebView 방식(카카오 공식 웹 인증 페이지)으로 대체하며, 이 경우에도 US-08(소셜 로그인) 요구사항을 충족합니다.
+
+### 18.5 React / React Native 채택 시 추가 공수 요약
+
+| 항목 | 추가 공수 | 비고 |
+|------|-----------|------|
+| iink SDK 네이티브 모듈 브리지 개발 | 2~3주 | iOS + Android 각각 개발 필요 |
+| React Native 새 아키텍처 환경 구성 | 0.5주 | 프로젝트 초기 한 번만 |
+| `@shopify/react-native-skia` 캔버스 구현 | 1~2주 | PencilKit 대비 추가 구현 |
+| Kakao 로그인 검증 또는 대체 구현 | 0.5주 | WebView 방식은 즉시 구현 가능 |
+| **합계** | **약 4~6주** | Phase 1 일정에 반영 필요 |
+
+> **결론**: React Native 환경에서 본 PRD의 모든 핵심 기능을 구현하는 것은 가능합니다. 단, **iink SDK 브리징**, **Skia 캔버스 성능 최적화**, **새 아키텍처 적용**에 약 4~6주의 추가 공수가 필요하며, 이를 Phase 1 스프린트 계획에 반드시 반영해야 합니다.
 
 ---
 
