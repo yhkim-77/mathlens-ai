@@ -28,13 +28,16 @@ android {
             keyPassword 'android'
         }
         release {
-            if (project.hasProperty('RELEASE_KEYSTORE_FILE')) {
-                storeFile file(RELEASE_KEYSTORE_FILE)
-                storePassword System.getenv("RELEASE_KEYSTORE_PASSWORD") ?: RELEASE_KEYSTORE_PASSWORD
-                keyAlias System.getenv("RELEASE_KEY_ALIAS") ?: RELEASE_KEY_ALIAS
-                keyPassword System.getenv("RELEASE_KEY_PASSWORD") ?: RELEASE_KEY_PASSWORD
+            // Release signing is configured exclusively via environment variables.
+            // Set RELEASE_KEYSTORE_FILE, RELEASE_KEYSTORE_PASSWORD,
+            // RELEASE_KEY_ALIAS, and RELEASE_KEY_PASSWORD in the CI environment.
+            // Falls back to debug keystore when env vars are not set.
+            if (System.getenv("RELEASE_KEYSTORE_FILE")) {
+                storeFile file(System.getenv("RELEASE_KEYSTORE_FILE"))
+                storePassword System.getenv("RELEASE_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword System.getenv("RELEASE_KEY_PASSWORD")
             } else {
-                // Fall back to debug signing in CI when no release key is configured
                 storeFile file('debug.keystore')
                 storePassword 'android'
                 keyAlias 'androiddebugkey'

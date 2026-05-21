@@ -79,7 +79,7 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? '로그인 실패';
+        state.error = action.error.message ?? '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.';
       })
       .addCase(register.pending, state => {
         state.loading = true;
@@ -93,7 +93,7 @@ const authSlice = createSlice({
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? '회원가입 실패';
+        state.error = action.error.message ?? '회원가입에 실패했습니다. 다시 시도해주세요.';
       });
   },
 });

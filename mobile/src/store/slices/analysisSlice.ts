@@ -65,7 +65,7 @@ const analysisSlice = createSlice({
       })
       .addCase(submitAnalysis.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? '분석 실패';
+        state.error = action.error.message ?? '풀이 분석에 실패했습니다. 네트워크 연결을 확인하고 다시 시도해주세요.';
       });
   },
 });

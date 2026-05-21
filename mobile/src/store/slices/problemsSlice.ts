@@ -54,7 +54,7 @@ const problemsSlice = createSlice({
       })
       .addCase(fetchProblems.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? '문제 목록 로드 실패';
+        state.error = action.error.message ?? '문제 목록을 불러오는데 실패했습니다. 다시 시도해주세요.';
       })
       .addCase(fetchRecommended.fulfilled, (state, action) => {
         state.recommended = action.payload;

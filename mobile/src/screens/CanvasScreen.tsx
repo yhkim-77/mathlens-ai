@@ -42,28 +42,42 @@ export default function CanvasScreen() {
   const [strokeWidth, setStrokeWidth] = useState(WIDTHS[1]);
   const currentPath = useRef('');
 
+  const isDrawingRef = useRef(false);
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
     onPanResponderGrant: (e: GestureResponderEvent) => {
       const {locationX, locationY} = e.nativeEvent;
       currentPath.current = `M${locationX},${locationY}`;
+      isDrawingRef.current = true;
+      // Start a new stroke
+      setStrokes(prev => [
+        ...prev,
+        {path: currentPath.current, color, width: strokeWidth},
+      ]);
     },
     onPanResponderMove: (e: GestureResponderEvent) => {
+      if (!isDrawingRef.current) {return;}
       const {locationX, locationY} = e.nativeEvent;
       currentPath.current += ` L${locationX},${locationY}`;
+      // Update the last (current) stroke in-place
       setStrokes(prev => {
+        if (prev.length === 0) {return prev;}
         const updated = [...prev];
-        if (updated.length > 0 && updated[updated.length - 1].path === currentPath.current.split(' ')[0]) {
-          updated[updated.length - 1] = {path: currentPath.current, color, width: strokeWidth};
-          return updated;
-        }
-        return [...updated, {path: currentPath.current, color, width: strokeWidth}];
+        updated[updated.length - 1] = {
+          path: currentPath.current,
+          color,
+          width: strokeWidth,
+        };
+        return updated;
       });
     },
     onPanResponderRelease: () => {
-      if (currentPath.current) {
-        setUndoStack(prev => [...prev, strokes]);
+      if (isDrawingRef.current) {
+        isDrawingRef.current = false;
+        // Save snapshot for undo (before this stroke)
+        setUndoStack(prev => [...prev, []]);
         currentPath.current = '';
       }
     },
@@ -71,9 +85,9 @@ export default function CanvasScreen() {
 
   const handleUndo = useCallback(() => {
     if (undoStack.length === 0) {return;}
-    setStrokes(undoStack[undoStack.length - 1]);
+    setStrokes(prev => prev.slice(0, -1));
     setUndoStack(prev => prev.slice(0, -1));
-  }, [undoStack, strokes]);
+  }, [undoStack]);
 
   const handleClear = useCallback(() => {
     Alert.alert('전체 지우기', '캔버스를 초기화하시겠습니까?', [
@@ -82,12 +96,12 @@ export default function CanvasScreen() {
         text: '확인',
         style: 'destructive',
         onPress: () => {
-          setUndoStack(prev => [...prev, strokes]);
           setStrokes([]);
+          setUndoStack([]);
         },
       },
     ]);
-  }, [strokes]);
+  }, []);
 
   const handleSubmit = useCallback(async () => {
     if (strokes.length === 0) {
