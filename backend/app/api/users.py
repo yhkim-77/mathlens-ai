@@ -153,7 +153,7 @@ async def get_wrong_notes(
 
     conditions = [
         UserProblemHistory.user_id == user_id,
-        UserProblemHistory.is_correct == False,
+        UserProblemHistory.is_correct == False,  # noqa: E712 (SQLAlchemy requires ==)
     ]
     if error_type:
         conditions.append(UserProblemHistory.error_type == error_type)

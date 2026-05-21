@@ -160,8 +160,10 @@ async def create_submission(
     Accept a handwritten math solution for async AI analysis.
     Returns 202 immediately; use WebSocket for progress.
     """
+    from app.core.config import settings as _settings
+
     # Validate image size (~2MB after base64)
-    if len(request.image_base64) > 2_800_000:
+    if len(request.image_base64) > _settings.MAX_IMAGE_BYTES_BASE64:
         raise HTTPException(status_code=400, detail="SUBMISSION_IMAGE_TOO_LARGE")
 
     if not request.image_base64.strip():

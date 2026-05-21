@@ -77,8 +77,9 @@ async def analyze_image(
     student_grade: str = "middle_2",
 ):
     """Upload an image file and synchronously analyze the math solution."""
+    from app.core.config import settings as _settings
     contents = await file.read()
-    if len(contents) > 2_097_152:
+    if len(contents) > _settings.MAX_IMAGE_UPLOAD_BYTES:
         raise HTTPException(status_code=400, detail="SUBMISSION_IMAGE_TOO_LARGE")
 
     image_base64 = base64.b64encode(contents).decode("utf-8")

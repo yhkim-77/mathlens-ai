@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     # Redis (optional async queue)
     REDIS_URL: Optional[str] = None
 
+    # Submission limits
+    MAX_IMAGE_BYTES_BASE64: int = 2_800_000   # ~2 MB decoded
+    MAX_IMAGE_UPLOAD_BYTES: int = 2_097_152   # 2 MB raw
+
     # CORS
     ALLOWED_ORIGINS: list[str] = ["*"]
 

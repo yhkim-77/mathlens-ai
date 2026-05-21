@@ -6,9 +6,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://mathlens:mathlens@db:5432/mathlens
+      - DATABASE_URL=postgresql+asyncpg://mathlens:${POSTGRES_PASSWORD:-mathlens_dev}@db:5432/mathlens
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - SECRET_KEY=${SECRET_KEY}
       - DEBUG=false
     depends_on:
       db:
@@ -19,7 +19,7 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: mathlens
-      POSTGRES_PASSWORD: mathlens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mathlens_dev}
       POSTGRES_DB: mathlens
     ports:
       - "5432:5432"
