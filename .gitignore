@@ -12,6 +12,7 @@
 .cxx
 *.keystore
 !debug.keystore
+!mobile/android/app/debug.keystore
 
 # ========================
 # iOS
