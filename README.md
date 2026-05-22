@@ -63,7 +63,13 @@ mathlens-ai/
 ├── docker-compose.yml        # API + PostgreSQL
 ├── docs/
 │   ├── RFP_통합본.md
-│   └── PRD_통합본.md
+│   ├── PRD_통합본.md
+│   ├── SRS.md                      # 소프트웨어 요구사항 명세서
+│   ├── Functional_Design_Document.md  # 기능 설계서
+│   ├── Detailed_Design_Document.md    # 상세 설계서
+│   ├── QA_Validation_Plan.md       # QA 검증 계획서
+│   ├── Test_Cases.md               # 테스트 케이스 문서
+│   └── CI_CD_Documentation.md      # CI/CD 문서
 └── .github/workflows/
     ├── ci.yml                # 테스트 + Docker 빌드 (push/PR)
     └── release.yml           # 릴리즈 생성 + GHCR 이미지 푸시 (tag)
@@ -216,8 +222,21 @@ git push origin v1.0.0
 
 ## 📄 문서
 
-- [RFP 통합본](docs/RFP_통합본.md)
-- [PRD 통합본](docs/PRD_통합본.md)
+### 기획 및 요구사항
+- [RFP 통합본](docs/RFP_통합본.md) — 제안요청서
+- [PRD 통합본](docs/PRD_통합본.md) — 제품 요구사항 문서
+- [SRS](docs/SRS.md) — 소프트웨어 요구사항 명세서
+
+### 설계
+- [Functional Design Document](docs/Functional_Design_Document.md) — 기능 설계서
+- [Detailed Design Document](docs/Detailed_Design_Document.md) — 상세 설계서
+
+### QA 및 테스트
+- [QA Validation Plan](docs/QA_Validation_Plan.md) — QA 검증 계획서
+- [Test Cases](docs/Test_Cases.md) — 테스트 케이스 문서
+
+### DevOps
+- [CI/CD Documentation](docs/CI_CD_Documentation.md) — CI/CD 파이프라인 문서
 
 ---
 
