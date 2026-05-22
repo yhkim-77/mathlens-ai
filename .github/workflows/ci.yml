@@ -86,11 +86,15 @@ jobs:
         working-directory: mobile/android
         run: chmod +x gradlew
 
+      - name: Create local.properties
+        working-directory: mobile/android
+        run: echo "sdk.dir=$ANDROID_HOME" > local.properties
+
       - name: Build debug APK
         working-directory: mobile/android
         run: ./gradlew assembleDebug --no-daemon
         env:
-          JAVA_OPTS: '-Xmx2g'
+          JAVA_OPTS: '-Xmx4g'
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4

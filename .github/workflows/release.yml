@@ -108,11 +108,15 @@ jobs:
         working-directory: mobile/android
         run: chmod +x gradlew
 
+      - name: Create local.properties
+        working-directory: mobile/android
+        run: echo "sdk.dir=$ANDROID_HOME" > local.properties
+
       - name: Build release APK
         working-directory: mobile/android
         run: ./gradlew assembleRelease --no-daemon
         env:
-          JAVA_OPTS: '-Xmx2g'
+          JAVA_OPTS: '-Xmx4g'
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
