@@ -400,6 +400,68 @@ def is_mathematically_equivalent(student_latex: str, correct_latex: str) -> bool
 | 교육과정 준수 | 2022 개정 교육과정 범위 내로 제한 (프롬프트 규칙 + 후처리 검증) |
 | 검증 | 생성된 문제를 수식 파서로 유효성 검사 후 DB 저장 |
 
+#### FR-AI-10: 오개념 추론 상세 알고리즘
+
+| 항목 | 내용 |
+|------|------|
+| 설명 | 학생이 무엇을 이해하지 못했는지 근본 원인을 분석하는 오개념 추론 시스템 |
+| 오개념 패턴 DB | 중·고등 수학의 일반적인 오개념 패턴 데이터베이스 (분수 연산, 지수 법칙, 인수분해, 이항 규칙, 함수 변환 등) |
+| 패턴 매칭 엔진 | 학생 오답 풀이와 오개념 패턴 DB를 매칭하여 유사도 점수 계산 (코사인 유사도 또는 임베딩 거리) |
+| LLM 보완 추론 | 패턴 DB에 없는 경우 GPT-4o가 문맥 기반으로 오개념 추론 수행 |
+| 신뢰도 점수 | 각 오개념 추론 결과에 0.0~1.0 신뢰도 점수 부여 |
+| 학습 데이터 수집 | 사용자 피드백("이 설명이 도움되었나요?")을 수집하여 오개념 패턴 DB 지속 개선 |
+
+**오개념 패턴 DB 구조 (예시):**
+
+```json
+{
+  "misconception_id": "m_frac_add_001",
+  "concept": "분수의 덧셈",
+  "pattern": {
+    "input_expression": "\\frac{a}{b} + \\frac{c}{d}",
+    "incorrect_output": "\\frac{a+c}{b+d}",
+    "error_type": "conceptual",
+    "description": "분모와 분자를 각각 더함 (공통분모 개념 미형성)"
+  },
+  "feedback_template": "분수의 덧셈은 먼저 분모를 같게 만들어야 합니다. {a}/{b}는 {a*d}/{b*d}로, {c}/{d}는 {c*b}/{d*b}로 고쳐 쓴 뒤 분자끼리 더합니다.",
+  "related_concepts": ["공통분모", "통분"],
+  "difficulty_level": 1,
+  "frequency": 0.23
+}
+```
+
+**구현 알고리즘 (의사코드):**
+
+```python
+def infer_misconception(student_solution, correct_solution, problem_context):
+    # 1. 패턴 매칭
+    matched_patterns = []
+    for pattern in misconception_db:
+        similarity = calculate_similarity(student_solution, pattern)
+        if similarity > 0.7:
+            matched_patterns.append((pattern, similarity))
+
+    # 2. 가장 유사한 패턴 선택
+    if matched_patterns:
+        best_match = max(matched_patterns, key=lambda x: x[1])
+        return {
+            "misconception_id": best_match[0].id,
+            "confidence": best_match[1],
+            "feedback": generate_feedback(best_match[0], student_solution)
+        }
+
+    # 3. LLM 보완 추론
+    else:
+        llm_result = llm_analyze_misconception(
+            student_solution, correct_solution, problem_context
+        )
+        return {
+            "misconception_id": "llm_inferred",
+            "confidence": llm_result.confidence,
+            "feedback": llm_result.feedback
+        }
+```
+
 ---
 
 ### 4.4 맞춤형 피드백 화면
@@ -433,6 +495,77 @@ def is_mathematically_equivalent(student_latex: str, correct_latex: str) -> bool
 | 유사 문제 | AI 생성 유사 문제로 이동 |
 | 개념 더 보기 | 개념 상세 화면으로 이동 |
 | 넘어가기 | 다음 문제로 이동 |
+
+#### FR-FEEDBACK-05: 음성 설명 (TTS) 상세 요구사항
+
+| 항목 | 내용 |
+|------|------|
+| 설명 | AI가 생성한 개념 설명을 자연스러운 한국어 음성으로 읽어주는 기능 |
+| 음성 엔진 | iOS: AVSpeechSynthesizer (한국어 음성), Android: Android TextToSpeech (한국어 음성) |
+| 고급 TTS (Phase 2+) | Google Cloud TTS, AWS Polly, ElevenLabs (자연스러운 음성) |
+| 재생 컨트롤 | 재생/일시정지, 재생 속도 조절 (0.8x, 1.0x, 1.2x, 1.5x) |
+| 텍스트 하이라이팅 | 음성 재생 중 현재 읽고 있는 문장 실시간 하이라이팅 |
+| 접근성 | VoiceOver/TalkBack 사용자를 위한 음성 피드백 자동 활성화 |
+| 오프라인 지원 | 온디바이스 TTS 엔진 사용 (인터넷 불필요) |
+
+**TTS 구현 예시 (iOS):**
+
+```swift
+import AVFoundation
+
+class TTSManager: NSObject, AVSpeechSynthesizerDelegate {
+    private let synthesizer = AVSpeechSynthesizer()
+
+    func speak(text: String, rate: Float = 1.0) {
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "ko-KR")
+        utterance.rate = rate  // 0.0 ~ 1.0
+        utterance.pitchMultiplier = 1.0
+        utterance.volume = 1.0
+
+        synthesizer.delegate = self
+        synthesizer.speak(utterance)
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer,
+                          willSpeakRangeOfSpeechString characterRange: NSRange,
+                          utterance: AVSpeechUtterance) {
+        // 현재 읽고 있는 텍스트 범위 하이라이팅
+        highlightText(range: characterRange)
+    }
+}
+```
+
+**TTS 구현 예시 (Android):**
+
+```kotlin
+import android.speech.tts.TextToSpeech
+import java.util.Locale
+
+class TTSManager(context: Context) : TextToSpeech.OnInitListener {
+    private val tts = TextToSpeech(context, this)
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            tts.language = Locale.KOREAN
+            tts.setSpeechRate(1.0f)  // 0.5 ~ 2.0
+        }
+    }
+
+    fun speak(text: String) {
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "utteranceId")
+    }
+
+    fun setRate(rate: Float) {
+        tts.setSpeechRate(rate)
+    }
+}
+```
+
+**Phase 4 음성 튜터 확장:**
+- 양방향 대화: 학생이 음성으로 질문하면 AI가 음성으로 답변 (STT + LLM + TTS 파이프라인)
+- 자연스러운 음성: ElevenLabs, Google Cloud Neural2 Voice 등 고품질 TTS
+- 실시간 대화: WebRTC 기반 저지연 음성 스트리밍
 
 ---
 
@@ -555,15 +688,23 @@ def is_mathematically_equivalent(student_latex: str, correct_latex: str) -> bool
 
 | 지표 | 요구 수준 |
 |------|-----------|
+| **캔버스 렌더링** | |
+| 캔버스 렌더링 프레임 속도 | ≥ 60 FPS (≤ 16ms/frame) |
+| Stroke 입력 지연 | ≤ 10ms (터치 입력부터 화면 표시까지) |
+| **실시간 인식** | |
+| Stroke 단위 인식 지연 | ≤ 200ms (단일 기호/수식 인식, 온디바이스) |
+| 부분 수식 인식 | ≤ 300ms (작성 중인 수식 실시간 미리보기) |
 | 수식 인식 미리보기 지연 | 획 입력 후 200ms 이내 (iink SDK, 온디바이스) |
+| **서버 응답** | |
 | 풀이 제출 접수 응답 (202) | P99 기준 500ms 이내 |
 | HTR 처리 시간 (서버 기준) | P95 기준 4,000ms 이내 |
 | 전체 파이프라인 완료 | P95 기준 10,000ms 이내 |
 | 풀이 제출 후 AI 분석 완료 | P95 기준 5초 이내 |
+| **API 응답** | |
 | 문제 추천 API 응답 시간 | P99 기준 1,000ms 이내 |
 | 앱 콜드 스타트 | 3초 이내 (iOS/Android) |
 | API 서버 응답 시간 | P99 기준 2초 이내 (AI 분석 제외) |
-| 캔버스 렌더링 프레임 속도 | ≥ 60 FPS (≤ 16ms/frame) |
+| **시스템 용량** | |
 | 동시 접속자 | 1,000 CCU 이상 처리 |
 | 동시 처리 제출 수 | 500건/분 이상 |
 
