@@ -1,5 +1,3 @@
-import type {Stroke} from '../screens/CanvasScreen';
-
 /**
  * Converts canvas strokes to a base64-encoded SVG image string.
  * Serializes the drawn strokes as an SVG document and encodes it as
