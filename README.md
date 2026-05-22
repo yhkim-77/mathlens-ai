@@ -222,6 +222,9 @@ git push origin v1.0.0
 
 ## 📄 문서
 
+### 프로젝트 관리
+- [Project History](docs/Project_History.md) — 프로젝트 이력서 (마일스톤, 버전 이력, ADR)
+
 ### 기획 및 요구사항
 - [RFP 통합본](docs/RFP_통합본.md) — 제안요청서
 - [PRD 통합본](docs/PRD_통합본.md) — 제품 요구사항 문서
@@ -230,6 +233,8 @@ git push origin v1.0.0
 ### 설계
 - [Functional Design Document](docs/Functional_Design_Document.md) — 기능 설계서
 - [Detailed Design Document](docs/Detailed_Design_Document.md) — 상세 설계서
+- [Database Design Document](docs/Database_Design_Document.md) — 데이터베이스 설계서
+- [API Design Document](docs/API_Design_Document.md) — API 설계서
 
 ### QA 및 테스트
 - [QA Validation Plan](docs/QA_Validation_Plan.md) — QA 검증 계획서
