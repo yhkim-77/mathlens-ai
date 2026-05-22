@@ -82,6 +82,12 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('mobile/android/**/*.gradle*', 'mobile/android/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
+      - name: Download Gradle wrapper JAR
+        working-directory: mobile/android/gradle/wrapper
+        run: |
+          curl -fL -o gradle-wrapper.jar \
+            "https://github.com/gradle/gradle/raw/v8.6.0/gradle/wrapper/gradle-wrapper.jar"
+
       - name: Make gradlew executable
         working-directory: mobile/android
         run: chmod +x gradlew
