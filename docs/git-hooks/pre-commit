@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Pre-commit hook to validate Android resources
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Check if Android files are being committed
+if git diff --cached --name-only | grep -q "mobile/android"; then
+    echo -e "${YELLOW}Android files detected, validating resources...${NC}"
+
+    # Run the validation script
+    if [ -f "mobile/android/validate-resources.sh" ]; then
+        cd mobile/android
+        if ./validate-resources.sh; then
+            echo -e "${GREEN}✓ Android resource validation passed${NC}"
+            cd - > /dev/null
+        else
+            echo -e "${RED}✗ Android resource validation failed${NC}"
+            echo -e "${RED}Please fix the errors before committing${NC}"
+            cd - > /dev/null
+            exit 1
+        fi
+    else
+        echo -e "${YELLOW}⚠ Validation script not found, skipping validation${NC}"
+    fi
+fi
+
+exit 0
