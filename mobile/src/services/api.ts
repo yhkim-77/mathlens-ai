@@ -1,4 +1,35 @@
-const BASE_URL = process.env.API_BASE_URL ?? 'http://10.0.2.2:8000';
+import {NativeModules, Platform} from 'react-native';
+
+function resolveBaseUrl(): string {
+  const envBaseUrl = process.env.API_BASE_URL;
+  if (envBaseUrl) {
+    return envBaseUrl;
+  }
+
+  // In dev mode, derive host from Metro URL so real devices can hit the same host.
+  const scriptURL: string | undefined = NativeModules.SourceCode?.scriptURL;
+  const parsed = scriptURL?.match(/^(https?):\/\/([^/:]+)(?::\d+)?/);
+
+  if (parsed) {
+    const protocol = parsed[1];
+    const host = parsed[2];
+
+    // GitHub Codespaces forwards each port on a port-specific subdomain.
+    if (host.endsWith('.app.github.dev') && host.includes('-8081.')) {
+      return `https://${host.replace('-8081.', '-8000.')}`;
+    }
+
+    return `${protocol}://${host}:8000`;
+  }
+
+  if (Platform.OS === 'android') {
+    return 'http://10.0.2.2:8000';
+  }
+
+  return 'http://localhost:8000';
+}
+
+const BASE_URL = resolveBaseUrl();
 
 async function request<T>(
   path: string,
