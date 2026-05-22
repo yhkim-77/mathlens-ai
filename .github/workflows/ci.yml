@@ -87,6 +87,7 @@ jobs:
         run: |
           curl -fL -o gradle-wrapper.jar \
             "https://github.com/gradle/gradle/raw/v8.6.0/gradle/wrapper/gradle-wrapper.jar"
+          echo "d3b261c2820e9e3d8d639ed084900f11f4a86050a8f83342ade7b6bc9b0d2bdd  gradle-wrapper.jar" | sha256sum -c
 
       - name: Make gradlew executable
         working-directory: mobile/android
