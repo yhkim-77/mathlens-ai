@@ -108,6 +108,12 @@ jobs:
         working-directory: mobile/android
         run: chmod +x gradlew
 
+      - name: Validate Android resources
+        working-directory: mobile/android
+        run: |
+          chmod +x validate-resources.sh
+          ./validate-resources.sh
+
       - name: Create local.properties
         working-directory: mobile/android
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
